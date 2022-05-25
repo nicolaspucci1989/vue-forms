@@ -16,7 +16,8 @@ const form = ref({
   firstName: '',
   lastName: '',
   email: '',
-  option: options[0].value
+  option: options[0].value,
+  telephone: ''
 })
 
 const formIsValid = computed(() =>
@@ -58,6 +59,13 @@ function doSubmit() {
               label="Email"
               v-model="form.email"
               type="email"
+          />
+
+          <BaseInput
+              label="Telephone"
+              v-model="form.telephone"
+              type="text"
+              :mask="'(###)###-####'"
           />
 
           <BaseSelect

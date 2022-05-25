@@ -5,6 +5,7 @@
         type="text"
         class="form-control"
         :value="modelValue"
+        v-maska="mask"
         @input="$emit('update:modelValue', $event.target.value)"
     >
   </div>
@@ -25,6 +26,11 @@ defineProps({
   modelValue: {
     type: String,
     required: true
+  },
+  mask: {
+    type: String,
+    required: false,
+    default: ''
   }
 })
 defineEmits(['update:modelValue'])
