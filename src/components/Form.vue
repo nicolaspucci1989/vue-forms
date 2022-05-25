@@ -2,11 +2,21 @@
 import {computed, ref} from "vue";
 import axios from 'axios'
 import BaseInput from "./BaseInput.vue";
+import BaseSelect from "./BaseSelect.vue";
+
+
+const options = [
+  {label: 'Fun to use', value: 'fun'},
+  {label: 'Friendly learning curve', value: 'curve'},
+  {label: 'Amazing documentation', value: 'docs'},
+  {label: 'Fantastic community', value: 'community'}
+]
 
 const form = ref({
   firstName: '',
   lastName: '',
-  email: ''
+  email: '',
+  option: options[0].value
 })
 
 const formIsValid = computed(() =>
@@ -48,6 +58,12 @@ function doSubmit() {
               label="Email"
               v-model="form.email"
               type="email"
+          />
+
+          <BaseSelect
+              v-model="form.option"
+              label="Wachu want"
+              :options="options"
           />
 
           <div class="form-group">
