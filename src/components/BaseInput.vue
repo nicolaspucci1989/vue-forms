@@ -2,7 +2,7 @@
   <div class="form-group">
     <label>{{ label }}</label>
     <input
-        type="text"
+        :type="type"
         class="form-control"
         :value="modelValue"
         v-maska="mask"

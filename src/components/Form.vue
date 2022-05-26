@@ -64,7 +64,6 @@ function doSubmit() {
           <BaseInput
               label="Telephone"
               v-model="form.telephone"
-              type="text"
               :mask="'(###)###-####'"
           />
 
