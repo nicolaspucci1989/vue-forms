@@ -4,6 +4,10 @@
     <input
         :type="type"
         class="form-control"
+        :class="{
+          'is-valid': validator && !validator.$error && validator.$dirty,
+          'is-invalid': validator && validator.$error
+        }"
         :value="modelValue"
         v-maska="mask"
         @input="$emit('update:modelValue', $event.target.value)"
@@ -31,6 +35,13 @@ defineProps({
     type: String,
     required: false,
     default: ''
+  },
+  validator: {
+    type: Object,
+    required: false,
+    validator($v) {
+      return $v.hasOwnProperty('$model')
+    }
   }
 })
 defineEmits(['update:modelValue'])

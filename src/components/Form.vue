@@ -1,6 +1,10 @@
 <script setup>
-import {computed, ref} from "vue";
+import {computed, reactive, ref} from "vue";
 import axios from 'axios'
+
+import useVuelidate from '@vuelidate/core'
+import {url, required, alpha, email} from '@vuelidate/validators'
+
 import BaseInput from "./BaseInput.vue";
 import BaseSelect from "./BaseSelect.vue";
 
@@ -17,8 +21,22 @@ const form = ref({
   lastName: '',
   email: '',
   option: options[0].value,
-  telephone: ''
+  telephone: '',
+  website: ''
 })
+
+const rules = {
+  firstName: {alpha, required},
+  lastName: {alpha},
+  email: {email, required},
+  option: {required},
+  telephone: {
+    validPhone: phone => phone.match(/((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}/) !== null
+  },
+  website: {url, required}
+}
+
+const $v = useVuelidate(rules, form)
 
 const formIsValid = computed(() =>
     (
@@ -30,7 +48,7 @@ const formIsValid = computed(() =>
 function doSubmit() {
   if (!formIsValid.value) return
   axios
-      .post('http://localhost:3001/content', {params: {...form.value}})
+      .post('http://localhost:3001/content', {params: {...form}})
       .then(res => {
         console.log('Form has been posted', res)
       })
@@ -47,30 +65,41 @@ function doSubmit() {
         <form @submit.prevent="doSubmit">
           <BaseInput
               label="First Name"
-              v-model="form.firstName"
+              v-model="$v.firstName.$model"
+              :validator="$v.firstName"
           />
 
           <BaseInput
               label="Last Name"
-              v-model="form.lastName"
+              v-model="$v.lastName.$model"
+              :validator="$v.lastName"
           />
 
           <BaseInput
               label="Email"
-              v-model="form.email"
+              v-model="$v.email.$model"
               type="email"
+              :validator="$v.email"
           />
 
           <BaseInput
               label="Telephone"
-              v-model="form.telephone"
+              v-model="$v.telephone.$model"
+              :validator="$v.telephone"
               :mask="'(###)###-####'"
           />
 
           <BaseSelect
-              v-model="form.option"
-              label="Wachu want"
+              v-model="$v.option.$model"
+              label="Info"
               :options="options"
+              :validator="$v.option"
+          />
+
+          <BaseInput
+              label="Website"
+              v-model="$v.website.$model"
+              :validator="$v.website"
           />
 
           <div class="form-group">
@@ -86,6 +115,11 @@ function doSubmit() {
         </form>
         <pre>
           {{ form }}
+        </pre>
+
+        errors
+        <pre>
+          {{ $v.website }}
         </pre>
       </div>
     </div>
