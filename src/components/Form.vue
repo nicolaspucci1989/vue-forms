@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import axios from 'axios'
 
 import {useStore} from "../store"
@@ -23,14 +23,14 @@ const options = [
 ]
 
 
-const form = ref({
-  firstName: '',
-  lastName: '',
-  email: '',
-  option: options[0].value,
-  telephone: '',
-  website: ''
-})
+const form = {
+  firstName: computed(() => store.user.firstName),
+  lastName: computed(() => store.user.lastName),
+  email: computed(() => store.user.email),
+  option: computed(() => store.user.option),
+  telephone: computed(() => store.user.telephone),
+  website: computed(() => store.user.website),
+}
 
 const rules = {
   firstName: {alpha, required},
@@ -45,11 +45,16 @@ const rules = {
 
 const $v = useVuelidate(rules, form)
 
+function updateUser(property, value) {
+  store.user[property] = value
+  $v.value[property].$touch()
+}
+
 function doSubmit() {
   $v.value.$touch()
   if ($v.value.$invalid) return
   axios
-      .post('http://localhost:3001/content', {params: {...form}})
+      .post('http://localhost:3001/content', {params: {...store.user}})
       .then(res => {
         console.log('Form has been posted', res)
       })
@@ -67,32 +72,37 @@ function doSubmit() {
         <form @submit.prevent="doSubmit">
           <BaseInput
               label="First Name"
-              v-model="$v.firstName.$model"
+              :model-value="store.user.firstName"
+              @update:model-value="updateUser('firstName', $event)"
               :validator="$v.firstName"
           />
 
           <BaseInput
               label="Last Name"
-              v-model="$v.lastName.$model"
+              :model-value="store.user.lastName"
+              @update:model-value="updateUser('lastName', $event)"
               :validator="$v.lastName"
           />
 
           <BaseInput
               label="Email"
-              v-model="$v.email.$model"
+              :model-value="store.user.email"
+              @update:model-value="updateUser('email', $event)"
               type="email"
               :validator="$v.email"
           />
 
           <BaseInput
               label="Telephone"
-              v-model="$v.telephone.$model"
+              :model-value="store.user.telephone"
+              @update:model-value="updateUser('telephone', $event)"
               :validator="$v.telephone"
               :mask="'(###)###-####'"
           />
 
           <BaseSelect
-              v-model="$v.option.$model"
+              :model-value="store.user.option"
+              @update:model-value="updateUser('option', $event)"
               label="Info"
               :options="options"
               :validator="$v.option"
@@ -100,7 +110,8 @@ function doSubmit() {
 
           <BaseInput
               label="Website"
-              v-model="$v.website.$model"
+              :model-value="store.user.website"
+              @update:model-value="updateUser('website', $event)"
               :validator="$v.website"
           />
 
