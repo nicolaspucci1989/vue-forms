@@ -19,7 +19,7 @@ defineProps({
     type: Object,
     required: false,
     validator($v) {
-      $v.hasOwnProperty('$model')
+      return $v.hasOwnProperty('$model')
     }
   }
 })
