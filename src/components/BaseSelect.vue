@@ -14,6 +14,13 @@ defineProps({
   modelValue: {
     type: String,
     required: true
+  },
+  validator: {
+    type: Object,
+    required: false,
+    validator($v) {
+      $v.hasOwnProperty('$model')
+    }
   }
 })
 defineEmits(['update:modelValue'])
@@ -24,6 +31,10 @@ defineEmits(['update:modelValue'])
     <label>{{ label }}</label>
     <select
         class="form-control"
+        :class="{
+          'is-valid': validator && !validator.$error,
+          'is-invalid': validator && validator.$error
+        }"
         @change="$emit('update:modelValue', $event.target.value)"
     >
       <option

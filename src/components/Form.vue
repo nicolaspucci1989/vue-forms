@@ -1,5 +1,5 @@
 <script setup>
-import {computed, reactive, ref} from "vue";
+import {ref} from "vue";
 import axios from 'axios'
 
 import useVuelidate from '@vuelidate/core'
@@ -38,15 +38,9 @@ const rules = {
 
 const $v = useVuelidate(rules, form)
 
-const formIsValid = computed(() =>
-    (
-        form.value.firstName.length > 0 &&
-        form.value.lastName.length > 0 &&
-        form.value.email.length > 0
-    ))
-
 function doSubmit() {
-  if (!formIsValid.value) return
+  $v.value.$touch()
+  if ($v.value.$invalid) return
   axios
       .post('http://localhost:3001/content', {params: {...form}})
       .then(res => {
@@ -104,7 +98,7 @@ function doSubmit() {
 
           <div class="form-group">
             <button
-                :disabled="!formIsValid"
+                :disabled="$v.$error"
                 @click.prevent="doSubmit"
                 type="submit" class="btn btn-primary"
             >
