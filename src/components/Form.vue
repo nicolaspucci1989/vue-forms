@@ -2,12 +2,18 @@
 import {ref} from "vue";
 import axios from 'axios'
 
+import {useStore} from "../store"
+
 import useVuelidate from '@vuelidate/core'
 import {url, required, alpha, email} from '@vuelidate/validators'
 
 import BaseInput from "./BaseInput.vue";
 import BaseSelect from "./BaseSelect.vue";
+import TheHeader from "./TheHeader.vue";
 
+
+const store = useStore()
+await store.getLoggedInUsers()
 
 const options = [
   {label: 'Fun to use', value: 'fun'},
@@ -15,6 +21,7 @@ const options = [
   {label: 'Amazing documentation', value: 'docs'},
   {label: 'Fantastic community', value: 'community'}
 ]
+
 
 const form = ref({
   firstName: '',
@@ -53,6 +60,7 @@ function doSubmit() {
 </script>
 
 <template>
+  <TheHeader/>
   <div class="container py-4">
     <div class="row">
       <div class="col-12">
@@ -107,14 +115,9 @@ function doSubmit() {
           </div>
 
         </form>
-        <pre>
-          {{ form }}
-        </pre>
-
-        errors
-        <pre>
-          {{ $v.website }}
-        </pre>
+       <pre>
+         {{store.$state}}
+       </pre>
       </div>
     </div>
   </div>

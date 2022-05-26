@@ -1,9 +1,17 @@
 <script setup>
-import Form from './components/Form.vue'
+import Form from "./components/Form.vue";
 </script>
 
 <template>
-  <Form/>
+  <suspense>
+    <Form/>
+    <template #fallback>
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+        </div>
+      </div>
+    </template>
+  </suspense>
 </template>
 
 <style lang="sass">
